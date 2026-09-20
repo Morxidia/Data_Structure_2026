@@ -62,11 +62,8 @@ bool tambahData(Node *&head, int nilai)
         current = current->next;
     }
 
-    if (current->next == nullptr)
-    {
-        current->next = newNode;
-        return true;
-    }
+    current->next = newNode;
+    return true;
 
     return false;
 }

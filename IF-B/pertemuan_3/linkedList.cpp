@@ -11,8 +11,7 @@ struct Mahasiswa
 };
 
 bool nimTersedia(Mahasiswa *head, std::string nim);
-bool tambahMahasiswa(Mahasiswa *&head,
-                     string nama, string nim, double ipk);
+bool tambahMahasiswa(Mahasiswa *&head,string nama, string nim, double ipk);
 Mahasiswa *cariNim(Mahasiswa *head, std::string nim);
 bool hapusNim(Mahasiswa *&head, std::string nim);
 void tampilkan(Mahasiswa *head);
@@ -64,26 +63,17 @@ int main()
 Mahasiswa *cariNim(Mahasiswa *head, std::string nim)
 {
     if (head == nullptr)
-    {
         return nullptr;
-    }
+
     Mahasiswa *currNode = head;
-    while (currNode->next != nullptr && currNode->nim != nim)
-    {
+    while (currNode->next != nullptr && currNode->nim != nim){
         currNode = currNode->next;
     }
-    if (currNode->next == nullptr && currNode->nim != nim)
-    {
-        return nullptr;
-    }
-    else if (currNode->nim == nim)
-    {
+
+    if (currNode->nim == nim)
         return currNode;
-    }
     else
-    {
         return nullptr;
-    }
 }
 
 bool nimTersedia(Mahasiswa *head,
@@ -126,24 +116,18 @@ bool tambahMahasiswa(Mahasiswa *&head,
             NodeBaru->next = temp;
             head = NodeBaru;
         }
-        while (temp->next != nullptr && temp->nim < nim)
+        
+        // edit here where the logic to insert in the middle isn't work, I know why but it gonna take whole code to explain (or maybe not,im just lazy)
+        while (temp->next != nullptr && temp->next->nim < nim)
         {
             temp = temp->next;
         }
-        if (temp != head && temp->next != nullptr)
-        {
-            Mahasiswa *belakang = temp->next;
-            temp->next = NodeBaru;
-            NodeBaru->next = belakang;
-        }
-        else if (temp->next == nullptr)
-        {
-            temp->next = NodeBaru;
-            NodeBaru->next = nullptr;
-        }
+
+        NodeBaru->next = temp->next;
+        temp->next = NodeBaru;
         return true;
     }
-    return true;
+    return false;
 }
 
 bool hapusNim(Mahasiswa *&head, std::string nim)
