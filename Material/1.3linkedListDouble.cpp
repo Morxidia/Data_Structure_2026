@@ -4,8 +4,7 @@ using namespace std;
 struct Node {
     int data;
     Node* next;
-    // constructor untuk Node
-    // Node(int value): data(value){}
+    Node *prev;
 };
 
 Node* buatNode(int nilai) {
@@ -81,12 +80,5 @@ void clear(Node*& head) {
 }
 
 int main(void){
-  Node* head = nullptr;
 
-  tambahAkhir(head, 10);
-  tambahAkhir(head, 20);
-  tambahAkhir(head, 30);
-  tambahAkhir(head, 40);
-
-  tampilkan(head);
 }

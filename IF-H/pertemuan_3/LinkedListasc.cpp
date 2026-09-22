@@ -44,6 +44,7 @@ bool tambahData(Node *&head, int nilai)
         head = newNode;
         return true;
     }
+    
     if (head->data > nilai)
     {
         newNode->next = head;

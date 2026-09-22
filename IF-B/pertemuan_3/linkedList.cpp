@@ -64,16 +64,15 @@ Mahasiswa *cariNim(Mahasiswa *head, std::string nim)
 {
     if (head == nullptr)
         return nullptr;
-
     Mahasiswa *currNode = head;
-    while (currNode->next != nullptr && currNode->nim != nim){
+    while (currNode != nullptr){
+        if (currNode->nim == nim)
+        {
+            return currNode;
+        }
         currNode = currNode->next;
     }
-
-    if (currNode->nim == nim)
-        return currNode;
-    else
-        return nullptr;
+    return nullptr;
 }
 
 bool nimTersedia(Mahasiswa *head,
@@ -111,26 +110,22 @@ bool tambahMahasiswa(Mahasiswa *&head,
     else
     {
         Mahasiswa *temp = head;
+        
         if (temp->nim > nim)
         {
+            // sisip depan
             NodeBaru->next = temp;
             head = NodeBaru;
+            return true;
         }
-        while (temp->next != nullptr && temp->nim < nim)
+
+        while (temp->next != nullptr && temp->next->nim< nim)
         {
             temp = temp->next;
         }
-        if (temp != head && temp->next != nullptr)
-        {
-            Mahasiswa *belakang = temp->next;
-            temp->next = NodeBaru;
-            NodeBaru->next = belakang;
-        }
-        else if (temp->next == nullptr)
-        {
-            temp->next = NodeBaru;
-            NodeBaru->next = nullptr;
-        }
+        
+        NodeBaru->next = temp->next;
+        temp->next = NodeBaru;
         return true;
     }
     return false;
@@ -142,10 +137,12 @@ bool hapusNim(Mahasiswa *&head, std::string nim)
     {
         return false;
     }
+
     Mahasiswa *currNode = head;
     Mahasiswa *sebelum = nullptr;
-    while (currNode->nim != nim && currNode->next != nullptr)
-    {
+    // traverse hingga nim akhir atau data ditemukan
+    while (currNode->next != nullptr && currNode->nim != nim )
+    {   
         sebelum = currNode;
         currNode = currNode->next;
     }

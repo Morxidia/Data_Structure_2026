@@ -10,50 +10,48 @@ struct Node
 
 Node *buatNode(int nilai)
 {
+    // initialization for the Node first time in heap memory
     Node *newNode = new Node{nilai, nullptr, nullptr};
     return newNode;
 }
 
 void tampilkanFromHead(Node *head)
 {
-    if (head == nullptr)
-    {
-        cout << "List Kosong" << endl;
-        return;
-    }
-
     Node *current = head;
-    do
+    while (current != nullptr)
     {
         cout << current->data;
-        if (current->next != head)
+        if (current->next != nullptr)
         {
             cout << " <-> ";
+            current = current->next;
         }
-        current = current->next;
-    } while (current != head);
-    cout << " -> back to head (" << head->data << ")" << endl;
+        else
+        {
+            cout << " -- end of data" << endl;
+            return;
+        }
+    }
+    return;
 }
-
 void tampilkanFromLast(Node *last)
 {
-    if (last == nullptr)
-    {
-        cout << "List Kosong" << endl;
-        return;
-    }
-
     Node *current = last;
-    do
+    while (current != nullptr)
     {
         cout << current->data;
-        if (current->prev != last)
+        if (current->prev != nullptr)
         {
             cout << " <-> ";
+            current = current->prev;
         }
-        current = current->prev;
-    } while (current != last);
-    cout << " -> back to last (" << last->data << ")" << endl;
+        else
+        {
+            cout << " -- end of data" << endl;
+            return;
+        }
+    }
+    return;
 }
 
 bool tambahData(Node *&head, Node *&last, int nilai)
@@ -66,8 +64,6 @@ bool tambahData(Node *&head, Node *&last, int nilai)
     {
         head = newNode;
         last = newNode;
-        head->next = head;
-        head->prev = head;
         return true;
     }
 
@@ -78,8 +74,6 @@ bool tambahData(Node *&head, Node *&last, int nilai)
         newNode->next = head;
         head->prev = newNode;
         head = newNode;
-        last->next = head;
-        head->prev = last;
         return true;
     };
 
@@ -88,31 +82,29 @@ bool tambahData(Node *&head, Node *&last, int nilai)
     // temp 11 next 15
 
     Node *current = head;
-    while (current->next != head && current->next->data < nilai)
+    while (current->next != nullptr && current->next->data < nilai)
     {
         current = current->next;
     }
 
-    if (current->next != head)
+    if (current->next != nullptr)
     {
-        // sisip tengah
+        newNode->next = current->next;
         // depan sambung new
         current->next->prev = newNode;
-        newNode->next = current->next;
-        // current sambung new
         current->next = newNode;
+
+        // current sambung new
         newNode->prev = current;
         return true;
     }
-    else if (current->next == head)
+    else if (current->next == nullptr)
     {
         // sisip belakang
-        current->next = newNode;
         newNode->prev = current;
+        current->next = newNode;
         // perubahan variable last itu diakhir
         last = newNode;
-        last->next = head;
-        head->prev = last;
         return true;
     }
     return false;
@@ -120,16 +112,24 @@ bool tambahData(Node *&head, Node *&last, int nilai)
 
 Node *cari(Node *head, int nilai)
 {
-    if (head == nullptr) return nullptr;
-
-    Node *current = head;
-    do
+    if (head == nullptr)
     {
-        if (current->data == nilai) return current;
+        return nullptr;
+    }
+    Node *current = head;
+    while (current->next != nullptr && current->data != nilai)
+    {
         current = current->next;
-    } while (current != head);
+    }
 
-    return nullptr;
+    if (current->data != nilai)
+    {
+        return nullptr;
+    }
+    else
+    {
+        return current;
+    }
 }
 
 bool hapusData(Node *&head, Node *&last, int nilai)
@@ -139,65 +139,54 @@ bool hapusData(Node *&head, Node *&last, int nilai)
         // check if the list is empty
         return false;
     }
-
     Node *current = head;
-    while (current->next != head && current->data != nilai)
+    while (current->next != nullptr && current->data != nilai)
     {
         current = current->next;
     }
 
-    if (current->data != nilai)
-    {
-        return false;
-    }
-    else{
-        if (current == head && head == last){
-            // jika node hanya berisi satu
-            head = nullptr;
-            last = nullptr;
-        }
-        else if (current == head)
+    if (current->data == nilai){
+        if (current == head)
         {
             // hapus depan
             head = current->next;
-            last->next = head;
-            head->prev = last;
+            if(head != nullptr){
+                // hapus depan jika list berisi lebih satu node
+                head->prev = nullptr;
+            }else{
+                // hapus depan jika list berisi satu node
+                last = nullptr;
+            }
         }
-        else if (current->next != head)
+        else if (current->next != nullptr)
         {
             // hapus tengah
             // Node *sebelum = current->prev;
             current->prev->next = current->next;
             current->next->prev = current->prev;
-
         }
         else
         {
             // hapus di akhir
             last = current->prev;
-            // sambungkan circular
-            last->next = head;
-            head->prev = last;
+            last->next = nullptr;
         }
         delete current;
         return true;
     }
-    return true;
+    return false;
 }
 
 void clear(Node *&head, Node *&last)
 {
-    if (head == nullptr) return;
-
     Node *current = head;
-    while (current->next != head)
+    while (current != nullptr)
     {
-        Node *sebelum = current;
-        current = current->next;
-        delete sebelum;
+        Node *berikut = current->next; 
+        delete current;                
+        current = berikut;             
     }
-    delete current;
-
+    
     head = nullptr;
     last = nullptr;
 }
@@ -221,13 +210,6 @@ int main()
     tambahData(head, last, 11);
     tampilkanFromHead(head);
     tambahData(head, last, 52);
-    cout << "" << endl;
-    tampilkanFromHead(head);
-    tampilkanFromLast(last);
-
-    hapusData(head, last, 52);
-    hapusData(head, last, 42);
-    cout << "" << endl;
     tampilkanFromHead(head);
     tampilkanFromLast(last);
 }
