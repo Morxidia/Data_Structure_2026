@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/StrukDatIFB/Data_Structure_2026/IF-B/pertemuan_3",
-      "program": "d:/StrukDatIFB/Data_Structure_2026/IF-B/pertemuan_3/build/Debug/outDebug",
+      "cwd": "d:/StrukDatIFB/Data_Structure_2026/IF-B/pertemuan_4",
+      "program": "d:/StrukDatIFB/Data_Structure_2026/IF-B/pertemuan_4/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
