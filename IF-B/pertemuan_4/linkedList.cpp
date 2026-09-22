@@ -165,19 +165,21 @@ bool hapusNim(Mahasiswa *&head, Mahasiswa *&tail, std::string nim)
         return false;
     }
     Mahasiswa *currNode = head;
-
-    while (currNode->nim != nim && currNode->next != nullptr)
-    {
+    
+    while (currNode->nim != nim && currNode->next != nullptr){
         currNode = currNode->next;
     }
 
-    if (currNode->next == nullptr && currNode->nim != nim)
-    {
+    if (currNode->nim != nim){
         return false;
     }
-    else if (currNode->nim == nim)
+    else
     {
-        if (currNode == head)
+        if(currNode == head && currNode == tail){
+            head = nullptr;
+            tail = nullptr;
+        }
+        else if (currNode == head)
         {
             // hapus depan, head maju selangkah, hapus current
             head = currNode->next;

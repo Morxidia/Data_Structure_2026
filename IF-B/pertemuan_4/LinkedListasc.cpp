@@ -117,45 +117,53 @@ bool hapusData(Node *&head, Node *&last, int nilai)
         // data tidak ditemukan
         return false;
     }
-    else if (current == head)
-    {
-        // hapus depan
-        if (current->next == head)
+    else{
+
+        if (current == head)
         {
-            head = nullptr;
-            last = nullptr;
-            delete current;
+            // hapus depan
+            if (current->next == head)
+            {
+                head = nullptr;
+                last = nullptr;
+            }
+            else{
+                head = current->next;
+                last->next = head;
+            }
         }
-    }
-    else if (current->next != head)
-    {
-        sebelum->next = current->next;
+        else if (current->next != head)
+        {
+            sebelum->next = current->next;
+        }
+        else
+        {
+            // hapus akhir
+            sebelum->next = head;
+            last = sebelum;
+        }
         delete current;
         return true;
     }
-    else
-    {
-        // hapus akhir
-        sebelum->next = head;
-        last = sebelum;
-        delete current;
-        return true;
-    }
-    return true;
+    return false;
 }
 
-void clear(Node *&head)
+void clear(Node *&head, Node *&last)
 {
+    if (head == nullptr) return;
+
     Node *current = head;
-    Node *sebelum = nullptr;
-    while (current->next != nullptr)
+    Node *berikut = nullptr;
+
+    do
     {
-        sebelum = current;
-        current = current->next;
-        delete sebelum;
-    }
-    delete current;
+        berikut = current->next;
+        delete current;
+        current = berikut;
+    } while (current != head);
+
     head = nullptr;
+    last = nullptr;
 }
 
 int main()
