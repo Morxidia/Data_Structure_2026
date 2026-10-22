@@ -1,5 +1,16 @@
-
-
+// Source - https://www.geeksforgeeks.org/dsa/binary-search-tree-data-structure/
+// Retrieved 2026-10-22]
+// C++ Program to implement binary search tree
+/*
+    To lecturer assistant
+    this code was originally retrived from GeeksForGeeks
+    but the code it self have some similarity from the Modul Praktikum Struktur Data 2026
+    we held, thus I use the GeeksForGeeks source code for this topic, 
+    I also addopt some code from stackOverFlow, see function printBT,
+    also I implement queue and some predecessor method for Node deletion
+    for futher improvement is welcome, just create new branch and sumbit for merge request into the main branch.
+    - best regard Morxidia
+*/
 #include <iostream>
 using namespace std;
 
@@ -9,6 +20,53 @@ struct Node {
     Node* left;
     Node* right;
 };
+
+// Queue for Level order print helper, replicate the Presentation logic rather than using Recursive
+// this code use 3.4 but in change for the data type from Template to Node reference for tree node
+// change variable below for bigger size tree
+const size_t QueueSize = 100;
+struct Queue {
+    Node** data;
+    int front;
+    int rear;
+    int count;
+    const int size;
+
+    Queue(const int size):data(new Node*[size]), front(0), rear(-1), count(0), size(size){};
+    
+    bool isEmpty() {
+        return count == 0;
+    }
+
+    bool isFull() {
+        return count == size;
+    }
+
+    bool enqueue(Node* nilai) {
+        if (isFull()) 
+            return false;
+
+        rear = (rear + 1) % size;
+        data[rear] = nilai;
+        ++count;
+        return true;
+    }
+
+    bool dequeue(Node*& nilaiKeluar) {
+        if (isEmpty())
+            return false;
+            
+        nilaiKeluar = data[front];
+        front = (front + 1) % size;
+        --count;
+        return true;
+    }
+
+    ~Queue() {
+        delete[] data;
+    }
+};
+
 
 // Function to create a new Node
 Node* createNode(int data)
@@ -37,6 +95,29 @@ Node* insertNode(Node* root, int data)
 
     // return the (unchanged) node pointer
     return root;
+}
+
+// Level Order Print using priority queue implement in 3.4
+void printLevelOrder(Node* root) {
+    if (root == nullptr) return;
+
+    Queue q(QueueSize);
+    q.enqueue(root);
+
+    while (!q.isEmpty()) {
+        Node* current = nullptr;
+        q.dequeue(current);
+
+        std::cout << current->data << " ";
+
+        if (current->left != nullptr) {
+            q.enqueue(current->left);
+        }
+        if (current->right != nullptr) {
+            q.enqueue(current->right);
+        }
+    }
+    std::cout << std::endl;
 }
 
 // Function to do inorder traversal of BST
@@ -193,6 +274,14 @@ Node* deleteNodePre(Node* root, int data)
 // Posted by Adrian Schneider, modified by community. See post 'Timeline' for change history
 // Retrieved 2026-10-22, License - CC BY-SA 4.0
 // C++ Program to implement binary search tree
+// How to read: 
+// └──root
+//     ├──node
+//     │   ├──leaf
+//     │   └──leaf
+//     └──node
+//         ├──leaf
+//         └──leaf
 void printBT(const std::string& prefix, const Node* node, bool isLeft)
 {
     if( node != nullptr )
@@ -228,23 +317,39 @@ int main()
     root = insertNode(root, 80);
     
     printBT(root);
-
-    // Print the inorder traversal of a BST
-    cout << "Inorder traversal of the given Binary Search "
-    "Tree is: ";
-    inorderTraversal(root);
     cout << endl;
+
+    // Print the traversal of a BST
+    cout << "LevelOrder traversal of the given Binary Search "
+    "Tree is: " << endl;
+    printLevelOrder(root);
+    cout << endl << endl;
+
+    cout << "InOrder traversal of the given Binary Search "
+    "Tree is: " << endl;
+    inorderTraversal(root);
+    cout << endl << endl;
+
+    cout << "PreOrder traversal of the given Binary Search "
+    "Tree is: " << endl;
+    preorder(root);
+    cout << endl << endl;
+    
+    cout << "PostOrder traversal of the given Binary Search "
+    "Tree is: " << endl;
+    postorder(root);
+    cout << endl << endl;
     
     // delete a node in BST
     root = deleteNodePre(root, 20);
-    cout << "After deletion of 20: ";
-    inorderTraversal(root);
+    cout << "After deletion of 20: " << endl;
+    printBT(root);
     cout << endl;
     
     // Insert a node in BST
     root = insertNode(root, 25);
-    cout << "After insertion of 25: ";
-    inorderTraversal(root);
+    cout << "After insertion of 25: "  << endl;
+    printBT(root);
     cout << endl;
 
     // Search a key in BST
@@ -260,3 +365,38 @@ int main()
 
     return 0;
 }
+
+
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣠⡤⠤⠤⠤⢤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠤⠖⠊⠉⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠒⠦⢄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡠⠖⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠑⠦⣀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠴⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠑⢦⡀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⣉⡤⠖⠊⡏⢉⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢫⠉⢱⠦⣄⡀⠙⢦⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⢠⠏⡞⠁⠀⣠⢞⡵⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⡜⣇⠀⠙⢆⠈⢧⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⢠⠋⠀⢧⡠⣾⡵⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢞⣧⠀⢸⠂⠀⣧⠀
+// ⠀⠀⠀⠀⠀⠀⠀⡟⠀⠀⠀⠙⠉⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡇⠀⠀⠀⠀⠀⠀⠈⠛⠒⠋⠀⠀⢸⠀
+// ⠀⠀⠀⠀⠀⠀⢸⠁⠀⠀⠀⠀⢠⠄⠀⠀⠀⠀⢠⢷⠀⠀⠀⠀⠀⠀⠀⠀⡄⠀⣸⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢨⠀
+// ⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⡆⠀⠀⢀⠀⠀⢸⠈⢇⠀⢰⠀⠀⠀⠀⠀⡇⢠⠃⢻⠀⢀⡔⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀
+// ⠀⠀⠀⠀⠀⠀⠈⡆⠀⠀⠀⠀⡇⠀⠀⠈⡵⠦⡼⠶⢾⣷⣸⣧⠀⠀⠀⣸⣧⣯⡶⣾⡴⡏⢀⣄⠀⠀⠀⠀⠀⠀⠀ ⡇⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⢧⠀⠀⠀⠀⡇⠀⠀⡼⠁⠀⣀⣀⡀⠀⠉⠉⢦⠀⢠⠋⠉⠁⠀⣉⣸⣗⣉⡈⠳⣄⠀⠀⠀⠀⠀⡇⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠘⣴⡀⠀⠀⢃⣠⠞⣿⡷⡿⠛⣿⣿⣿⢶⡄⠈⠳⠋⠀⠀⣰⢾⠛⢻⣿⣿⡿⣿⡈⡟⠂⠀  ⡇⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣧⠀⠀⠈⠁⠀⠸⡇⢿⣽⣿⣿⣿⡇⠁⠀⠀⠀⠀⠀⠀⢿⡵⣿⣿⣯⡇⠏⡹⠁⠀⠀⢀⡇⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡆⠀⠀⠀⠀⠀⠹⣌⠻⠿⠿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⠿⠿⠛⠀⣰⠃⠀⠀⠀⣠⠃⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢆⢀⡀⠀⠀⠀⠈⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⡃⠀⠀⢀⡜⠁⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠑⢆⡀⠀⠈⠻⡍⠀⠀⠀⠀⠀⠒⠒⠂⠀⠀⠀⠀⠀⣀⣤⣟⠁⣠⠔⠃⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠢⣄⣿⠛⣻⣶⣤⣤⣤⣀⣠⣤⢤⣤⣴⡶⠫⠿⣿⡚⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⢻⣶⡄⢰⢳⠃⢀⣷⣿⠦⢯⣿⡗⠀⢧⠹⡄⠀⣤⣽⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣷⣶⣶⣿⣄⣾⠏⠀⠈⠑⢦⡀⣤⠞⠉⠀⠈⠱⣧⢠⣼⣿⣦⣽⣦⡀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠔⣻⣿⣿⣿⡿⠟⢹⣿⡄⠀⠀⠀⣾⣿⣿⡀⠀⠀⠀⣸⣿⣿⢿⣿⣿⣿⣿⣿⢦⡀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⣰⣯⡟⠓⢍⠻⡿⠏⠁⠀⢸⢿⡟⠲⠶⠚⢱⠋⢲⠑⠒⠒⠊⣟⡩⢾⡇⠙⢿⣿⡿⢋⡼⡄⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⡼⠁⠀⠙⢤⡀⡻⠁⠀⠀⠀⡌⠶⣷⡶⠶⢦⠘⣗⠏⢀⠒⢒⣒⡻⠆⢸⡇⠀⠀⢻⡕⠉⠀⠀⠳⡀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⢰⡀⠀⠀⠀⣰⠋⠁⠀⠀⠀⠀⣧⠀⠀⠉⠉⠉⠀⢸⠀⠈⠉⠉⠀⠀⠀⣠⡇⠀⠀⠀⠀⠙⢦⣀⣀⡴⠃⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠑⠒⠉⠀⠀⠀⠀⠀⠀⠀⠀⡏⠳⣄⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⡠⠚⠁⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣇⡀⠈⠑⠢⣄⡀⠈⠁⠀⣀⠴⠋⠀⣀⣠⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣯⣽⠀⠀⠀⠀⠉⣷⠒⡋⠀⠀⠀⠀⢫⣵⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⢰⠤⡄⠀⠀⠀⡇⠀⣇⠀⠀⠀⡤⢦⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠧⠞⠀⠹⣄⠀⢸⠀⠀⢹⣀⣠⠞⠀⠘⠦⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⣀⣀⣉⡟⠀⠀⠀⡏⠀⠀⠀⣀⡀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠎⠉⠉⠉⠀⠈⡇⠀⠀⠀⡏⠉⠉⠉⠁⠉⢇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢨⡄⠀⠀⠀⣆⣠⠇⠀⠀⠀⣧⠀⣠⠀⠀⠀⢸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⠤⠤⠶⠛⠁⠀⠀⠀⠀⠈⠻⠿⣦⣤⡤⠞⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
