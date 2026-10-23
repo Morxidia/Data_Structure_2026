@@ -117,7 +117,6 @@ void printLevelOrder(Node* root) {
             q.enqueue(current->right);
         }
     }
-    std::cout << std::endl;
 }
 
 // Function to do inorder traversal of BST
@@ -130,6 +129,7 @@ void inorderTraversal(Node* root)
     }
 }
 
+// Function to do preorder traversal of BST
 void preorder(const Node* root) {
     if (root != nullptr){
         std::cout << root->data << ' ';
@@ -138,6 +138,7 @@ void preorder(const Node* root) {
     }
 }
 
+// Function to do postorder traversal of BST
 void postorder(const Node* root) {
     if (root != nullptr){
         postorder(root->left);
